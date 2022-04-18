@@ -15,9 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         window = UIWindow(frame: UIScreen.main.bounds)
-//        let tableView = CustomTableVC()
-//        let navi = UINavigationController(rootViewController: tableView)
-//        window?.rootViewController =  navi
+        let tabBar = TabBarViewController()
+        let navi = UINavigationController(rootViewController: tabBar)
+        navi.navigationBar.isHidden = true
+        window?.rootViewController = navi
         window?.makeKeyAndVisible()
         return true
     }
