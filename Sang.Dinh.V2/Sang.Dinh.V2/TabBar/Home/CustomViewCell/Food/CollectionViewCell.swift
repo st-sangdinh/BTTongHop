@@ -33,6 +33,7 @@ class CollectionViewCell: UICollectionViewCell {
     var number: Int = 0
     var price: Int = 0
     var favorite: Bool = false
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -46,18 +47,27 @@ class CollectionViewCell: UICollectionViewCell {
         foodImage.clipsToBounds = true
     }
     
-    func setData(img: UIImage, name: String, price: Int, number: Int ){
+    func setData(img: UIImage, name: String, price: Int, number: Int, isFavorite: Bool) {
         foodImage.image  = img
         nameFood.text = name
         priceFood.text = "\(price)"
         totalLabel.text = "\(number)"
         self.number = number
 //        self.price = price
-        
+        //
+        let image = isFavorite ? UIImage(named: "Favorite") : UIImage(named: "Favorite2")
+        //
+        favoriteButton.setImage(image, for: .normal)
     }
+
     @IBAction func favoriteButton(_ sender: Any) {
-        favoriteButton.setImage(UIImage(named: "Favorite"), for: .normal)
-        favorite = true
+        //
+        favorite.toggle()
+        //
+        let image = favorite ? UIImage(named: "Favorite") : UIImage(named: "Favorite2")
+        //
+        favoriteButton.setImage(image, for: .normal)
+        //
         delegate?.cell(cell: self, .favorite(isFavorite: favorite))
         
     }

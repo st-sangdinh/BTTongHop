@@ -9,7 +9,9 @@ import UIKit
 
 class HeaderCRV: UICollectionReusableView {
 
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var view: UIView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -17,5 +19,8 @@ class HeaderCRV: UICollectionReusableView {
         
         view.layer.cornerRadius = 10
     }
-    
+
+    func updateTitle(_ title: String) {
+        titleLabel.text = title
+    }
 }

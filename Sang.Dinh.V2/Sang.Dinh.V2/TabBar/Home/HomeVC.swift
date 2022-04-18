@@ -19,10 +19,13 @@ class HomeVC: UIViewController {
 
     @IBOutlet weak var bannerCollectionView: UICollectionView!
     @IBOutlet weak var menuCollectionView: UICollectionView!
+
     let favoriteVC = FavoriteVC()
     weak var delegate: HomeVCDelegate!
     
     var listMenu: [Menu] = []
+    var lastOrder: [Menu] = []
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -32,18 +35,20 @@ class HomeVC: UIViewController {
         navigationItem.rightBarButtonItem = cartButton
         
         
-        bannerCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
-        menuCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell2")
+
         bannerCollectionView.register(UINib(nibName: "BannerCustomViewCell" , bundle: nil), forCellWithReuseIdentifier: "BannerIMG")
+
         menuCollectionView.register(UINib(nibName: "HeaderCRV", bundle: Bundle.main),
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "Header"
         )
         menuCollectionView.register(UINib(nibName: "CollectionViewCell" , bundle: nil), forCellWithReuseIdentifier: "Menu")
+
         bannerCollectionView.dataSource = self
         bannerCollectionView.delegate = self
         menuCollectionView.dataSource = self
         menuCollectionView.delegate  = self
+
         favoriteVC.datasource = self
         setUpData()
     }
@@ -53,7 +58,13 @@ class HomeVC: UIViewController {
                     Menu(name: "abc2", price: 125000, img: UIImage(named: "p-2")!, number: 0, favorite: false),
                     Menu(name: "abc3", price: 153000, img: UIImage(named: "p-3")!, number: 0, favorite: false),
                     Menu(name: "abc4", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false),
-                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false)]
+                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false),
+                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false),
+                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false),
+                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false),
+                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false),
+                    Menu(name: "ab34", price: 150200, img: UIImage(named: "p-4")!, number: 0, favorite: false)
+        ]
     }
     
     @objc
@@ -73,23 +84,32 @@ extension HomeVC: UICollectionViewDataSource {
         }
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == menuCollectionView && section == 0 {
-
-            return listMenu.count
-        }else {
+        if collectionView == menuCollectionView {
+            if section == 0 {
+                return listMenu.count
+            } else {
+                return 0 // Tra ve danh sach `last order`
+            }
+        } else {
             return 3
         }
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == menuCollectionView {
        
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Menu", for: indexPath)  as? CollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Menu", for: indexPath) as? CollectionViewCell
             if (indexPath.section == 0 ){
-                cell?.setData(img: listMenu[indexPath.item].img, name: "\(listMenu[indexPath.item].name)", price: listMenu[indexPath.item].price,number: listMenu[indexPath.item].number)
+                let menu = listMenu[indexPath.item]
+                cell?.setData(img: menu.img,
+                              name: "\(menu.name)",
+                              price: menu.price,
+                              number: menu.number,
+                              isFavorite: menu.favorite)
             }
 //            print("dsd\(listMenu[indexPath.item].number)")
             cell?.delegate = self
             return cell ?? CollectionViewCell()
+            
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerIMG", for: indexPath) as! BannerCustomViewCell
             let indexPathItem = indexPath.item
@@ -115,8 +135,14 @@ extension HomeVC: UICollectionViewDataSource {
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: UICollectionView.elementKindSectionHeader,
                 withReuseIdentifier: "Header", for: indexPath
-            )
-            return header
+            ) as? HeaderCRV
+            if indexPath.section == 0 {
+                header?.updateTitle("Restaurants")
+            } else {
+                header?.updateTitle("Last Order")
+            }
+
+            return header ?? UICollectionReusableView()
         default:
             return UICollectionReusableView()
         }
@@ -146,7 +172,7 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if collectionView == menuCollectionView{
+        if collectionView == menuCollectionView {
             return CGSize(width: 0, height: 19)
         }else {
             return  .zero
@@ -156,7 +182,9 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
 // Tạo 1 func để kết nối
 extension HomeVC: FavoriteDataSrouce {
     func listFavorites() -> [Menu] {
-        listMenu
+        listMenu.filter { item in
+            return item.favorite
+        }
     }
 }
 
