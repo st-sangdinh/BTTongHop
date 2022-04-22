@@ -59,6 +59,14 @@ class CollectionViewCell: UICollectionViewCell {
         //
         favoriteButton.setImage(image, for: .normal)
     }
+    
+    func setDataLastOrder (img: UIImage, name: String, isFavorite: Bool){
+        foodImage.image = img
+        nameFood.text = name
+        let image = isFavorite ? UIImage(named: "Favorite") : UIImage(named: "Favorite2")
+        //
+        favoriteButton.setImage(image, for: .normal)
+    }
 
     @IBAction func favoriteButton(_ sender: Any) {
         //
@@ -67,10 +75,11 @@ class CollectionViewCell: UICollectionViewCell {
         let image = favorite ? UIImage(named: "Favorite") : UIImage(named: "Favorite2")
         //
         favoriteButton.setImage(image, for: .normal)
-        //
+        //  
         delegate?.cell(cell: self, .favorite(isFavorite: favorite))
         
     }
+    
     @IBAction func addButton(_ sender: Any) {
         number += 1 
         totalLabel.text = "\(number)"
